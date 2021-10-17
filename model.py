@@ -1,35 +1,184 @@
-import pandas as pd
+#!/usr/bin/env python
 
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+
+
+# # Read Data
+
+# In[6]:
+
+
+df = pd.read_csv('dataset.csv')
+
+
+# # Data Inspection
+
+# In[7]:
+
+
+df.head()
+
+
+# In[8]:
+
+
+df.shape
+
+
+# In[9]:
+
+
+df.info()
+
+
+# In[10]:
+
+
+df.describe().T
+
+
+# # Checking missing values
+
+# In[11]:
+
+
+df.isna().sum()
+
+
+# # Checking Outliers
+
+# In[12]:
+
+
+df.shape
+
+
+# In[13]:
+
+
+i = 1
+plt.figure(figsize=(15,15))
+for x in df.columns:
+    if i == 15:
+        break
+    else:
+        plt.subplot(5,3,i)
+        sns.boxplot(y=df[x])
+        plt.title(x)
+        #plt.show()
+    i+=1
+
+
+
+# In[14]:
+
+
+data = df.copy()
+
+
+# In[15]:
+
+
+data.target=data.target.map({0:'Absence',1:'Presence'})
+
+
+# In[16]:
+
+
+sns.countplot(data.target)
+
+
+# Disease present records are more than absent in this dataset
+
+# In[17]:
+
+
+plt.hist(data[data.target=='Presence']['age'],color='r',alpha=0.5,bins=15,label='Presence')
+plt.hist(data[data.target=='Absence']['age'],color='g',alpha=0.5,bins=15,label='Absence')
+plt.legend()
+plt.show()
+
+
+# age range 40 to 60 have lot of risk of having disease
+
+# In[34]:
+
+
+data = df.copy()
+data.sex=data.sex.map({0:'Female',1:'Male'})
+sns.countplot(data.sex,hue=data.target)
+
+
+# Comparing to Males, it seems more Females are having disease
+
+# In[22]:
+
+
+plt.hist(data[data.target=='Presence']['trestbps'],color='r',alpha=0.5,bins=15,label='Presence')
+plt.hist(data[data.target=='Absence']['trestbps'],color='g',alpha=0.5,bins=15,label='Absence')
+plt.legend()
+plt.show()
+
+
+# Resting Blood pressure looks similar for both disease presence and absence
+
+# In[165]:
+
+
+plt.hist(data[data.target=='Presence']['chol'],color='r',alpha=0.5,bins=15,label='Presence')
+plt.hist(data[data.target=='Absence']['chol'],color='g',alpha=0.5,bins=15,label='Absence')
+plt.legend()
+plt.show()
+
+
+# Serum Cholestoral level between 200 to 380 mg/dl have high risk of disease
+
+# In[169]:
+
+
+plt.hist(data[data.target=='Presence']['thalach'],color='r',alpha=0.5,bins=15,label='Presence')
+plt.hist(data[data.target=='Absence']['thalach'],color='g',alpha=0.5,bins=15,label='Absence')
+plt.legend()
+plt.show()
+
+
+# Maximun Heart Rate range between 150 to 180 have high risk of having the disease
+
+# In[174]:
+
+
+sns.countplot(data.ca,hue=data.target)
+
+
+# Less number of major vessels colored by flourosopy have risk of having the disease
+
+# # Create X and Y
+
+# In[38]:
+
+
+X = df.drop('target',axis=1)
+X
+
+
+# In[39]:
+
+
+Y = df.target
+
+
+# In[37]:
+
+
+df_m = df.copy()
+import seaborn as sns
 from scipy.stats.mstats import winsorize
 
-df= pd.read_csv('dataset.csv',header=None, names=["age", "sex", "cp", "trestbps", 
-                                                  "chol", "fbs", "restecg", "thalach", 
-                                                  "exang", "oldpeak", "slope", "ca", 
-                                                  "thal", "target"], na_values=['?'])
-df = df.replace('?','NaN')
-df['thal']=pd.to_numeric(df['thal'], errors='coerce')
-df['ca']=pd.to_numeric(df['ca'], errors='coerce')
-
-df_m=df.fillna(df.mean())
-
-
-df_m['slope'] = pd.to_numeric(df_m['slope'], errors='coerce')
-df_m['age'] = pd.to_numeric(df_m['age'], errors='coerce')
-df_m['sex'] = pd.to_numeric(df_m['sex'], errors='coerce')
-df_m['fbs'] = pd.to_numeric(df_m['fbs'], errors='coerce')
-df_m['exang'] = pd.to_numeric(df_m['exang'], errors='coerce')
-df_m['cp'] = pd.to_numeric(df_m['cp'], errors='coerce')
-
-df_m['trestbps'] = pd.to_numeric(df_m['trestbps'], errors='coerce')
-df_m['chol'] = pd.to_numeric(df_m['chol'], errors='coerce')
-df_m['thalach'] = pd.to_numeric(df_m['thalach'], errors='coerce')
-df_m['oldpeak'] = pd.to_numeric(df_m['oldpeak'], errors='coerce')
-df_m['restecg'] = pd.to_numeric(df_m['restecg'], errors='coerce')
-df_m['target'].replace(to_replace=[1, 2, 3, 4], value=1, inplace=True)
-
-print(df_m.dtypes)
-df_m = df_m.iloc[1: , :]
-import seaborn as sns
 sns.boxplot(x=df_m['ca'])
 
 df_m['Ca']=winsorize(df_m['ca'],limits=[0.0,0.25])
