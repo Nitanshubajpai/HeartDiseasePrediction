@@ -8,59 +8,14 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
-# # Read Data
-
-# In[6]:
-
 
 df = pd.read_csv('dataset.csv')
-
-
-# # Data Inspection
-
-# In[7]:
-
-
 df.head()
-
-
-# In[8]:
-
-
 df.shape
-
-
-# In[9]:
-
-
 df.info()
-
-
-# In[10]:
-
-
 df.describe().T
-
-
-# # Checking missing values
-
-# In[11]:
-
-
 df.isna().sum()
-
-
-# # Checking Outliers
-
-# In[12]:
-
-
 df.shape
-
-
-# In[13]:
-
-
 i = 1
 plt.figure(figsize=(15,15))
 for x in df.columns:
@@ -75,48 +30,18 @@ for x in df.columns:
 
 
 
-# In[14]:
-
-
 data = df.copy()
-
-
-# In[15]:
-
-
 data.target=data.target.map({0:'Absence',1:'Presence'})
-
-
-# In[16]:
-
-
 sns.countplot(data.target)
-
-
-# Disease present records are more than absent in this dataset
-
-# In[17]:
-
-
 plt.hist(data[data.target=='Presence']['age'],color='r',alpha=0.5,bins=15,label='Presence')
 plt.hist(data[data.target=='Absence']['age'],color='g',alpha=0.5,bins=15,label='Absence')
 plt.legend()
 plt.show()
 
 
-# age range 40 to 60 have lot of risk of having disease
-
-# In[34]:
-
-
 data = df.copy()
 data.sex=data.sex.map({0:'Female',1:'Male'})
 sns.countplot(data.sex,hue=data.target)
-
-
-# Comparing to Males, it seems more Females are having disease
-
-# In[22]:
 
 
 plt.hist(data[data.target=='Presence']['trestbps'],color='r',alpha=0.5,bins=15,label='Presence')
@@ -125,20 +50,11 @@ plt.legend()
 plt.show()
 
 
-# Resting Blood pressure looks similar for both disease presence and absence
-
-# In[165]:
-
 
 plt.hist(data[data.target=='Presence']['chol'],color='r',alpha=0.5,bins=15,label='Presence')
 plt.hist(data[data.target=='Absence']['chol'],color='g',alpha=0.5,bins=15,label='Absence')
 plt.legend()
 plt.show()
-
-
-# Serum Cholestoral level between 200 to 380 mg/dl have high risk of disease
-
-# In[169]:
 
 
 plt.hist(data[data.target=='Presence']['thalach'],color='r',alpha=0.5,bins=15,label='Presence')
@@ -147,33 +63,15 @@ plt.legend()
 plt.show()
 
 
-# Maximun Heart Rate range between 150 to 180 have high risk of having the disease
-
-# In[174]:
-
 
 sns.countplot(data.ca,hue=data.target)
-
-
-# Less number of major vessels colored by flourosopy have risk of having the disease
-
-# # Create X and Y
-
-# In[38]:
 
 
 X = df.drop('target',axis=1)
 X
 
 
-# In[39]:
-
-
 Y = df.target
-
-
-# In[37]:
-
 
 df_m = df.copy()
 import seaborn as sns
